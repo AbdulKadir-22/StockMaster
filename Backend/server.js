@@ -26,6 +26,9 @@ app.get('/', (req, res) => {
   res.json({ success: true, message: 'StockMaster API is running' });
 });
 
+const routes = require('./src/routes');
+app.use('/', routes);
+
 // Global Error Handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
