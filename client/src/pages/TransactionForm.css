@@ -1,0 +1,160 @@
+/* FILE: stockmaster-frontend/src/pages/TransactionForm.css */
+
+.transaction-container {
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: var(--bg-white);
+  padding: 2rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}
+
+.page-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 1rem;
+  margin-top: 1.5rem;
+}
+
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Dynamic Item Rows */
+.items-section {
+  background-color: var(--bg-light);
+  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.row-group {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px dashed var(--border-color);
+}
+
+.row-group:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.flex-grow {
+  flex-grow: 1;
+}
+
+.qty-input {
+  width: 120px;
+}
+
+.remove-btn {
+  height: 42px; /* Match input height */
+  width: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-white);
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 1px; /* Alignment tweak */
+}
+
+.remove-btn:hover {
+  background-color: var(--danger);
+  color: white;
+}
+
+.add-item-container {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.add-item-btn {
+  border: 2px dashed var(--color-primary);
+  background-color: transparent;
+  color: var(--color-primary);
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-item-btn:hover {
+  background-color: rgba(11, 110, 97, 0.05);
+}
+
+/* Summary Footer */
+.summary-section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.summary-text {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* Stock Availability Indicator */
+.stock-hint {
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.stock-hint.low {
+  color: #D97706;
+  font-weight: 600;
+}
+
+.stock-hint.ok {
+  color: var(--success);
+}
+
+@media (max-width: 600px) {
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+  }
+  
+  .row-group {
+    flex-direction: column;
+    align-items: stretch;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 1.5rem;
+  }
+  
+  .remove-btn {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+  
+  .qty-input {
+    width: 100%;
+  }
+}

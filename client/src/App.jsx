@@ -1,33 +1,55 @@
 // FILE: stockmaster-frontend/src/App.jsx
+import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
+
+// Context & Layout
+import { AuthProvider } from './context/AuthContext';
 import AppShell from './components/layout/AppShell';
 
-// Placeholder Components for routing testing
-const Login = () => <div className="flex-center" style={{height: '100vh'}}><h1>Login Page</h1></div>;
-const Register = () => <div className="flex-center" style={{height: '100vh'}}><h1>Register Page</h1></div>;
-const Dashboard = () => <h1>Dashboard Overview</h1>;
-const Products = () => <h1>Product Inventory</h1>;
-const Receipts = () => <h1>Goods Receipt</h1>;
-const Deliveries = () => <h1>Outbound Deliveries</h1>;
-const Ledger = () => <h1>Stock Ledger</h1>;
+// Public Pages
+import Login from './pages/Login';
+import Register from './pages/Register';
+
+// Protected Pages
+import Dashboard from './pages/Dashboard';
+import ProductsList from './pages/ProductsList';
+import ProductCreate from './pages/ProductCreate';
+import ReceiptCreate from './pages/ReceiptCreate';
+import DeliveryCreate from './pages/DeliveryCreate';
+import Ledger from './pages/Ledger';
 
 function App() {
   return (
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+    <AuthProvider>
+      <Routes>
+        {/* --- Public Routes --- */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-      {/* Protected Routes wrapped in AppShell */}
-      <Route path="/" element={<AppShell />}>
-        <Route index element={<Navigate to="/dashboard" replace />} />
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="products" element={<Products />} />
-        <Route path="receipts" element={<Receipts />} />
-        <Route path="deliveries" element={<Deliveries />} />
-        <Route path="ledger" element={<Ledger />} />
-      </Route>
-    </Routes>
+        {/* --- Protected Routes (Wrapped in AppShell Layout) --- */}
+        <Route path="/" element={<AppShell />}>
+          {/* Redirect root "/" to "/dashboard" */}
+          <Route index element={<Navigate to="/dashboard" replace />} />
+          
+          <Route path="dashboard" element={<Dashboard />} />
+          
+          {/* Product Management */}
+          <Route path="products" element={<ProductsList />} />
+          <Route path="products/create" element={<ProductCreate />} />
+          
+          {/* Transactions (Receipts & Deliveries) */}
+          <Route path="receipts/create" element={<ReceiptCreate />} />
+          <Route path="deliveries/create" element={<DeliveryCreate />} />
+          
+          {/* Reporting */}
+          <Route path="ledger" element={<Ledger />} />
+        </Route>
+        
+        {/* --- Catch-all Redirect --- */}
+        {/* If user visits an unknown route, send them back to root */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </AuthProvider>
   );
 }
 
