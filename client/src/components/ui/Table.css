@@ -1,0 +1,45 @@
+/* FILE: stockmaster-frontend/src/components/ui/Table.css */
+
+.table-container {
+  width: 100%;
+  overflow-x: auto; /* Handle horizontal scroll on small screens */
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  background-color: var(--bg-white);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px; /* Ensure table doesn't squash too much */
+}
+
+.data-table th {
+  background-color: var(--bg-light);
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  text-align: left;
+  padding: 1rem;
+  border-bottom: 2px solid var(--border-color);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.data-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--color-text);
+  font-size: 0.95rem;
+  vertical-align: middle;
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tr:hover td {
+  background-color: var(--bg-light);
+}

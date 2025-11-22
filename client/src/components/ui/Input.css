@@ -1,0 +1,53 @@
+/* FILE: stockmaster-frontend/src/components/ui/Input.css */
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.input-label {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text);
+  margin-bottom: 0.5rem;
+}
+
+.input-field {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-text);
+  background-color: var(--bg-white);
+  transition: border-color 0.2s ease;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(11, 110, 97, 0.1);
+}
+
+.input-field::placeholder {
+  color: var(--color-text-light);
+  opacity: 0.7;
+}
+
+/* Error State */
+.has-error .input-field {
+  border-color: var(--danger);
+}
+
+.has-error .input-field:focus {
+  box-shadow: 0 0 0 3px rgba(225, 45, 57, 0.1);
+}
+
+.input-error {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--danger);
+}

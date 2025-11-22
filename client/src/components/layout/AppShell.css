@@ -1,0 +1,40 @@
+/* FILE: stockmaster-frontend/src/components/layout/AppShell.css */
+
+.app-shell {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden; /* Prevent body scroll, let content scroll */
+  background-color: var(--bg-light);
+}
+
+.app-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto; /* Allow main content to scroll */
+  position: relative;
+}
+
+.content-container {
+  width: 100%;
+  max-width: 1400px; /* Limit width on ultra-wide screens */
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .app-shell {
+    flex-direction: column;
+  }
+  
+  .app-content {
+    height: calc(100vh - 60px); /* Adjust based on mobile header/nav height */
+  }
+
+  .content-container {
+    padding: 1rem;
+  }
+}
