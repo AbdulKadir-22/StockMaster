@@ -1,10 +1,10 @@
-# 📦 StockMaster Backend
+# StockMaster Backend
 
 A modular **Inventory Management System (IMS)** backend built with **Node.js**, **Express**, and **Mongoose**.
 
 ---
 
-## 🚀 Setup & Installation
+## Setup & Installation
 
 ### 1. Prerequisites
 - Node.js (v14+)
@@ -61,14 +61,14 @@ npm run dev
 
 ---
 
-## 📡 API Documentation & cURL Examples
+## API Documentation & cURL Examples
 
 Assuming the server is running at:
 **[http://localhost:5000](http://localhost:5000)**
 
 ---
 
-# 🔐 1. Authentication
+# 1. Authentication
 
 ### Login (Get JWT Token):
 
@@ -81,11 +81,11 @@ curl -X POST http://localhost:5000/auth/login \
   }'
 ```
 
-⚠️ **Save the `<TOKEN>`** from the response — you'll need it for all other calls.
+ **Save the `<TOKEN>`** from the response — you'll need it for all other calls.
 
 ---
 
-# 📦 2. Products
+# 2. Products
 
 ### Create Product
 
@@ -106,7 +106,7 @@ curl -X POST http://localhost:5000/products \
 
 ---
 
-# 🏭 3. Warehouses
+# 3. Warehouses
 
 ### Create Warehouse
 
@@ -123,7 +123,7 @@ curl -X POST http://localhost:5000/warehouses \
 
 ---
 
-# 📥 4. Receipts (Incoming Stock)
+# 4. Receipts (Incoming Stock)
 
 ### Step A: Create Draft Receipt
 
@@ -151,7 +151,7 @@ curl -X POST http://localhost:5000/receipts/<RECEIPT_ID>/validate \
 
 ---
 
-# 🚚 5. Deliveries (Outgoing Stock)
+# 5. Deliveries (Outgoing Stock)
 
 ### Step A: Create Draft Delivery
 
@@ -179,7 +179,7 @@ curl -X POST http://localhost:5000/deliveries/<DELIVERY_ID>/validate \
 
 ---
 
-# 🔄 6. Internal Transfers
+# 6. Internal Transfers
 
 ### Step A: Create Draft Transfer
 
@@ -207,7 +207,7 @@ curl -X POST http://localhost:5000/transfers/<TRANSFER_ID>/execute \
 
 ---
 
-# 📊 7. Dashboard
+# 7. Dashboard
 
 ### Get Summary
 
