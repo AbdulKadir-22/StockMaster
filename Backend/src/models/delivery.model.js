@@ -18,7 +18,13 @@ const deliverySchema = new mongoose.Schema({
   deliveryNumber: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    // Auto-generate a delivery number if none is provided
+    default: function () {
+      const ts = Date.now().toString(36).toUpperCase();
+      const rand = Math.random().toString(36).substring(2, 6).toUpperCase();
+      return `DLV-${ts}-${rand}`;
+    }
   },
   customer: {
     type: String, // Can be ref to Customer model in future

@@ -22,9 +22,9 @@ app.use(helmet());
 app.use(morgan('dev'));
 
 // Basic route
-app.get('/', (req, res) => {
-  res.json({ success: true, message: 'StockMaster API is running' });
-});
+// app.get('/', (req, res) => {
+//   res.json({ success: true, message: 'StockMaster API is running' });
+// });
 
 const routes = require('./src/routes');
 app.use('/', routes);
