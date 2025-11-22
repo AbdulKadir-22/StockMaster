@@ -2,7 +2,7 @@
 
 .transaction-container {
   max-width: 900px;
-  margin: 0 auto;
+  margin: 1.5rem auto;
   background-color: var(--bg-white);
   padding: 2rem;
   border-radius: var(--radius-md);
@@ -10,12 +10,14 @@
   border: 1px solid var(--border-color);
 }
 
+/* Header */
 .page-header {
   margin-bottom: 2rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--border-color);
 }
 
+/* Section titles inside transaction pages */
 .section-title {
   font-family: var(--font-heading);
   font-size: 1.1rem;
@@ -25,6 +27,7 @@
   margin-top: 1.5rem;
 }
 
+/* 2-column grid for top-level fields */
 .form-grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -32,14 +35,16 @@
   margin-bottom: 1.5rem;
 }
 
-/* Dynamic Item Rows */
+/* Dynamic Item Rows section */
 .items-section {
   background-color: var(--bg-light);
   padding: 1.5rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
+  margin-top: 1.5rem;
 }
 
+/* Each product row (product + qty + remove) */
 .row-group {
   display: flex;
   align-items: flex-end;
@@ -59,10 +64,12 @@
   flex-grow: 1;
 }
 
+/* Quantity input width on desktop */
 .qty-input {
   width: 120px;
 }
 
+/* Remove item button */
 .remove-btn {
   height: 42px; /* Match input height */
   width: 42px;
@@ -83,6 +90,7 @@
   color: white;
 }
 
+/* Add item */
 .add-item-container {
   margin-top: 1rem;
   display: flex;
@@ -99,6 +107,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  text-align: center;
 }
 
 .add-item-btn:hover {
@@ -113,6 +122,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
 }
 
 .summary-text {
@@ -121,7 +131,7 @@
   color: var(--color-text);
 }
 
-/* Stock Availability Indicator */
+/* Place stock indicator right under product select */
 .stock-hint {
   font-size: 0.8rem;
   margin-top: 0.25rem;
@@ -137,7 +147,13 @@
   color: var(--success);
 }
 
+/* Mobile tweaks */
 @media (max-width: 600px) {
+  .transaction-container {
+    padding: 1.25rem;
+    margin: 1rem;
+  }
+
   .form-grid-2 {
     grid-template-columns: 1fr;
   }
@@ -149,12 +165,17 @@
     padding-bottom: 1.5rem;
   }
   
+  .qty-input {
+    width: 100%;
+  }
+
   .remove-btn {
     width: 100%;
     margin-top: 0.5rem;
   }
-  
-  .qty-input {
-    width: 100%;
+
+  .summary-section {
+    flex-direction: column;
+    align-items: stretch;
   }
 }

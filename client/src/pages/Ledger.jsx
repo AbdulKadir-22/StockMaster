@@ -1,4 +1,5 @@
-// FILE: stockmaster-frontend/src/pages/Ledger.jsx
+// FILE: src/pages/Ledger.jsx
+
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import ledgerService from '../services/ledger.service';
@@ -7,14 +8,22 @@ import Button from '../components/ui/Button';
 import Select from '../components/ui/Select';
 import './Ledger.css';
 
+/**
+ * Ledger Page
+ * -----------
+ * Improvements:
+ * - safer data handling
+ * - fallback for missing populated fields
+ * - no crashes on weird backend rows
+ */
 const Ledger = () => {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
 
-  // Pagination & Filters
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
   const [filterType, setFilterType] = useState('ALL');
 
   const filterOptions = [
@@ -26,145 +35,135 @@ const Ledger = () => {
   ];
 
   useEffect(() => {
-    const fetchLedger = async () => {
+    const load = async () => {
       setLoading(true);
-      setError(null);
-      try {
-        const params = {
-          page,
-          limit: 15, // Slightly larger limit for ledger views
-        };
+      setError('');
 
-        if (filterType !== 'ALL') {
-          params.type = filterType;
-        }
+      try {
+        const params = { page, limit: 15 };
+        if (filterType !== 'ALL') params.type = filterType.toLowerCase();
 
         const response = await ledgerService.getAll(params);
+        const items = Array.isArray(response?.items)
+          ? response.items
+          : Array.isArray(response)
+          ? response
+          : [];
 
-        // Handle potential response variations
-        if (response.items) {
-          setEntries(response.items);
-          setTotalPages(response.totalPages || 1);
-        } else if (Array.isArray(response)) {
-          setEntries(response);
-        }
+        setEntries(items);
+        setTotalPages(response?.totalPages || 1);
       } catch (err) {
-        console.error(err);
-        setError('Failed to load stock ledger.');
+        console.error('Ledger load error:', err);
+        setError('Could not load ledger.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchLedger();
+    load();
   }, [page, filterType]);
 
-  const handlePrevPage = () => {
-    if (page > 1) setPage(prev => prev - 1);
-  };
-
-  const handleNextPage = () => {
-    if (page < totalPages) setPage(prev => prev + 1);
-  };
-
-  // Helper to format quantity display
-  const renderQuantity = (qty, type) => {
-    const isPositive = qty > 0;
-    const sign = isPositive ? '+' : '';
-    const className = isPositive ? 'qty-positive' : 'qty-negative';
-    
+  const renderQty = (qty) => {
+    if (typeof qty !== 'number') return <span className="qty-zero">0</span>;
+    const positive = qty > 0;
     return (
-      <span className={className}>
-        {sign}{qty}
+      <span className={positive ? 'qty-positive' : 'qty-negative'}>
+        {positive ? '+' : ''}
+        {qty}
       </span>
     );
   };
 
-  const tableHeaders = ['Timestamp', 'Product', 'Operation Type', 'Quantity Change', 'Warehouse', 'User'];
-
   return (
     <div className="ledger-container">
       <div className="page-header">
-        <div>
-          <h1 className="page-title">Stock Ledger</h1>
-          <p className="page-subtitle">History of all inventory movements.</p>
-        </div>
+        <h1 className="page-title">Stock Ledger</h1>
+        <p className="page-subtitle">History of all inventory movements.</p>
       </div>
 
       <div className="filter-bar">
-        <div className="filter-item">
-          <Select
-            name="operationType"
-            value={filterType}
-            onChange={(e) => {
-              setFilterType(e.target.value);
-              setPage(1); // Reset to page 1 on filter change
-            }}
-            options={filterOptions}
-          />
-        </div>
+        <Select
+          value={filterType}
+          options={filterOptions}
+          onChange={(e) => {
+            setFilterType(e.target.value);
+            setPage(1);
+          }}
+        />
       </div>
 
       {error && <div className="ledger-error">{error}</div>}
 
       {loading ? (
         <div className="loading-state">Loading history...</div>
+      ) : entries.length === 0 ? (
+        <div className="empty-state">No ledger entries found.</div>
       ) : (
         <>
-          {entries.length === 0 ? (
-            <div className="empty-state">
-              <p>No ledger entries found.</p>
-            </div>
-          ) : (
-            <Table headers={tableHeaders}>
-              {entries.map((entry) => (
-                <tr key={entry.id || entry._id}>
-                  <td>
-                    {entry.createdAt ? format(new Date(entry.createdAt), 'MMM d, yyyy, h:mm a') : 'N/A'}
-                  </td>
-                  <td>
-                    <div className="product-cell">
-                      <span className="product-name">{entry.productName || 'Unknown Product'}</span>
-                      <span className="product-sku">{entry.productSku}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <span className={`type-badge type-${entry.type?.toLowerCase()}`}>
-                      {entry.type}
+          <Table
+            headers={[
+              'Timestamp',
+              'Product',
+              'Operation Type',
+              'Quantity Change',
+              'Warehouse',
+              'User'
+            ]}
+          >
+            {entries.map((entry) => (
+              <tr key={entry?._id || entry?.id}>
+                <td>
+                  {entry?.createdAt
+                    ? format(new Date(entry.createdAt), 'MMM d, yyyy, h:mm a')
+                    : 'N/A'}
+                </td>
+
+                <td>
+                  <div className="product-cell">
+                    <span className="product-name">
+                      {entry?.productName || entry?.product?.name || 'Unknown'}
                     </span>
-                  </td>
-                  <td>
-                    {renderQuantity(entry.quantityChange, entry.type)}
-                  </td>
-                  <td>
-                    {entry.warehouseName || 'Main Warehouse'}
-                  </td>
-                  <td>
-                    {entry.userName || 'System'}
-                  </td>
-                </tr>
-              ))}
-            </Table>
-          )}
+                    <span className="product-sku">
+                      {entry?.productSku || entry?.product?.sku || ''}
+                    </span>
+                  </div>
+                </td>
+
+                <td>
+                  <span className={`type-badge type-${entry?.type || ''}`}>
+                    {(entry?.type || '').toUpperCase()}
+                  </span>
+                </td>
+
+                <td>{renderQty(entry?.quantityChange)}</td>
+
+                <td>{entry?.warehouseName || 'Warehouse'}</td>
+
+                <td>{entry?.userName || 'System'}</td>
+              </tr>
+            ))}
+          </Table>
 
           <div className="pagination">
             <span className="pagination-info">
               Page {page} of {totalPages}
             </span>
+
             <div className="pagination-controls">
-              <Button 
-                variant="secondary" 
-                size="sm" 
-                onClick={handlePrevPage} 
+              <Button
+                variant="secondary"
+                size="sm"
                 disabled={page === 1}
+                onClick={() => setPage(page - 1)}
               >
                 Previous
               </Button>
-              <Button 
-                variant="secondary" 
-                size="sm" 
-                onClick={handleNextPage} 
+
+              <Button
+                variant="secondary"
+                size="sm"
                 disabled={page === totalPages}
+                onClick={() => setPage(page + 1)}
               >
                 Next
               </Button>

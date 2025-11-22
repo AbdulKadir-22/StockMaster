@@ -6,47 +6,41 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // 1. Rename this to be specific to initialization
+  const [isInitializing, setIsInitializing] = useState(true); 
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const initAuth = async () => {
       const token = localStorage.getItem('token');
-      
       if (!token) {
-        setLoading(false);
+        setIsInitializing(false); // Done initializing
         return;
       }
-
       try {
-        // Token exists, verify it by fetching user details
         const userData = await authService.getMe();
         setUser(userData);
       } catch (err) {
         console.error('Auth initialization failed:', err);
-        // If token is invalid/expired, clear it
         localStorage.removeItem('token');
         setUser(null);
-        setError('Session expired. Please log in again.');
       } finally {
-        setLoading(false);
+        setIsInitializing(false); // Done initializing
       }
     };
-
     initAuth();
   }, []);
 
+  // 2. REMOVE setLoading calls from login/register.
+  // Let the UI components (Register.jsx/Login.jsx) handle their own spinners.
+  
   const login = async (email, password) => {
-    setLoading(true);
+    // setLoading(true);  <-- DELETE THIS
     setError(null);
     try {
       const response = await authService.login(email, password);
-      
-      // Assuming response contains { token, user }
       if (response.token) {
         localStorage.setItem('token', response.token);
-        // If the login response doesn't return the full user object, 
-        // we might need to call getMe() here. Assuming it does for now.
         setUser(response.user);
         return response.user;
       } else {
@@ -55,17 +49,15 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       setError(err.message);
       throw err;
-    } finally {
-      setLoading(false);
-    }
+    } 
+    // finally { setLoading(false); } <-- DELETE THIS
   };
 
   const register = async (userData) => {
-    setLoading(true);
+    // setLoading(true); <-- DELETE THIS
     setError(null);
     try {
       const response = await authService.register(userData);
-      
       if (response.token) {
         localStorage.setItem('token', response.token);
         setUser(response.user);
@@ -74,21 +66,18 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       setError(err.message);
       throw err;
-    } finally {
-      setLoading(false);
-    }
+    } 
+    // finally { setLoading(false); } <-- DELETE THIS
   };
 
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
-    // Optional: window.location.href = '/login'; 
-    // (Better handled by the Router listening to the user state)
   };
 
   const value = {
     user,
-    loading,
+    loading: isInitializing, // Expose as 'loading' if you want, or update consumers
     error,
     isAuthenticated: !!user,
     login,
@@ -96,17 +85,10 @@ export const AuthProvider = ({ children }) => {
     logout,
   };
 
-  if (loading) {
-    // Simple loading state as requested
+  // 3. Update the render condition
+  if (isInitializing) {
     return (
-      <div style={{ 
-        height: '100vh', 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center',
-        fontFamily: 'var(--font-heading)',
-        color: 'var(--color-primary)'
-      }}>
+      <div style={{ /* ...styles... */ }}>
         Loading StockMaster...
       </div>
     );

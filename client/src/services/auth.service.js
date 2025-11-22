@@ -15,7 +15,7 @@ const register = async (userData) => {
 const getMe = async () => {
   // GET /users/me
   // Expected return: { id: "...", email: "...", role: "..." }
-  return await api.get('/users/me');
+  return await api.get('/auth/me');
 };
 
 const authService = {

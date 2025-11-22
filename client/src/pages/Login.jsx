@@ -1,5 +1,4 @@
-// FILE: stockmaster-frontend/src/pages/Login.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Input from '../components/ui/Input';
@@ -8,8 +7,8 @@ import './Login.css';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
-  
+  const { login, isAuthenticated } = useAuth();
+
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -17,13 +16,21 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // If the user is already logged in, don't show the login form.
+  // Immediately send them to the dashboard to avoid a weird UX.
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-    // Clear error when user types
+    // Clear error when user starts typing again
     if (error) setError('');
   };
 
@@ -33,9 +40,11 @@ const Login = () => {
     setError('');
 
     try {
+      // This will set token + user in AuthContext and localStorage
       await login(formData.email, formData.password);
       navigate('/dashboard');
     } catch (err) {
+      // Any error message from API interceptor will surface here
       setError(err.message || 'Failed to login. Please check your credentials.');
     } finally {
       setLoading(false);
@@ -74,12 +83,12 @@ const Login = () => {
           />
 
           <div className="form-actions">
-            <Button 
-              type="submit" 
-              variant="primary" 
-              size="lg" 
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
               isLoading={loading}
-              className="w-full" // Helper class defined in Login.css or global
+              className="w-full"
             >
               Sign In
             </Button>
@@ -88,7 +97,10 @@ const Login = () => {
 
         <div className="login-footer">
           <p>
-            New here? <Link to="/register" className="auth-link">Create Account</Link>
+            New here?{' '}
+            <Link to="/register" className="auth-link">
+              Create Account
+            </Link>
           </p>
         </div>
       </div>

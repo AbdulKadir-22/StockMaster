@@ -1,4 +1,5 @@
-// FILE: stockmaster-frontend/src/pages/ProductsList.jsx
+// FILE: src/pages/ProductsList.jsx
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import productService from '../services/product.service';
@@ -7,47 +8,56 @@ import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import './ProductsList.css';
 
+/**
+ * Products List
+ * -------------
+ * Improvements:
+ * - Safe API parsing (items may be undefined)
+ * - Better empty state clarity
+ * - Prevent crashing on missing fields
+ */
 const ProductsList = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  
-  // Pagination & Search State
+  const [error, setError] = useState('');
+
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
-  // Debounce search input
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
-      setPage(1); // Reset to page 1 on new search
-    }, 500);
+      setPage(1);
+    }, 400);
     return () => clearTimeout(timer);
   }, [search]);
 
-  // Fetch Data
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
+      setError('');
+
       try {
         const response = await productService.getAll({
           page,
           limit: 10,
           search: debouncedSearch
         });
-        
-        // Handle both potential response structures (array or paginated object)
-        if (response.items) {
-          setProducts(response.items);
-          setTotalPages(response.totalPages || 1);
-        } else if (Array.isArray(response)) {
-          setProducts(response); // Fallback if API returns just an array
-        }
+
+        const items = Array.isArray(response?.items)
+          ? response.items
+          : Array.isArray(response)
+          ? response
+          : [];
+
+        setProducts(items);
+        setTotalPages(response?.totalPages || 1);
       } catch (err) {
-        console.error("Failed to load products", err);
-        setError('Failed to load products. Please try again.');
+        console.error('Products load failed:', err);
+        setError('Could not load products. Please try again.');
       } finally {
         setLoading(false);
       }
@@ -56,23 +66,16 @@ const ProductsList = () => {
     fetchProducts();
   }, [page, debouncedSearch]);
 
-  // Helper to determine status
   const getStockStatus = (quantity, reorderLevel) => {
+    if (typeof quantity !== 'number' || typeof reorderLevel !== 'number') {
+      return <span className="status-badge">Unknown</span>;
+    }
+
     if (quantity <= reorderLevel) {
       return <span className="status-badge status-low">Low Stock</span>;
     }
     return <span className="status-badge status-ok">In Stock</span>;
   };
-
-  const handlePrevPage = () => {
-    if (page > 1) setPage(prev => prev - 1);
-  };
-
-  const handleNextPage = () => {
-    if (page < totalPages) setPage(prev => prev + 1);
-  };
-
-  const tableHeaders = ['Product Name', 'SKU', 'Category', 'Total Stock', 'Reorder Level', 'Status'];
 
   return (
     <div className="page-container">
@@ -81,8 +84,8 @@ const ProductsList = () => {
           <h1 className="page-title">Products</h1>
           <p className="page-subtitle">Manage your inventory items</p>
         </div>
-        <Link to="/products/create" style={{ textDecoration: 'none' }}>
-          <Button variant="primary" size="md">+ Add Product</Button>
+        <Link to="/products/create">
+          <Button variant="primary">+ Add Product</Button>
         </Link>
       </div>
 
@@ -99,49 +102,63 @@ const ProductsList = () => {
 
       {loading ? (
         <div className="loading-state">Loading inventory...</div>
+      ) : products.length === 0 ? (
+        <div className="empty-state">
+          <p>No products found.</p>
+          {search && (
+            <Button variant="secondary" onClick={() => setSearch('')}>
+              Clear Search
+            </Button>
+          )}
+        </div>
       ) : (
         <>
-          {products.length === 0 ? (
-            <div className="empty-state">
-              <p>No products found.</p>
-              {search && <Button variant="secondary" onClick={() => setSearch('')} size="sm">Clear Search</Button>}
-            </div>
-          ) : (
-            <Table headers={tableHeaders}>
-              {products.map((product) => (
-                <tr key={product.id || product._id}>
-                  <td>
-                    <div className="product-name-cell">
-                      <strong>{product.name}</strong>
-                    </div>
-                  </td>
-                  <td>{product.sku}</td>
-                  <td>{product.category}</td>
-                  <td>{product.quantity} {product.uom}</td>
-                  <td>{product.reorderLevel}</td>
-                  <td>{getStockStatus(product.quantity, product.reorderLevel)}</td>
-                </tr>
-              ))}
-            </Table>
-          )}
+          <Table
+            headers={[
+              'Product Name',
+              'SKU',
+              'Category',
+              'Total Stock',
+              'Reorder Level',
+              'Status'
+            ]}
+          >
+            {products.map((product) => (
+              <tr key={product?.id || product?._id}>
+                <td><strong>{product?.name || 'N/A'}</strong></td>
+                <td>{product?.sku || 'N/A'}</td>
+                <td>{product?.category || 'N/A'}</td>
+                <td>
+                  {product?.quantity ?? 0} {product?.uom || ''}
+                </td>
+                <td>{product?.reorderLevel ?? 0}</td>
+                <td>
+                  {getStockStatus(
+                    product?.quantity ?? 0,
+                    product?.reorderLevel ?? 0
+                  )}
+                </td>
+              </tr>
+            ))}
+          </Table>
 
           <div className="pagination">
             <span className="pagination-info">
               Page {page} of {totalPages}
             </span>
             <div className="pagination-controls">
-              <Button 
-                variant="secondary" 
-                size="sm" 
-                onClick={handlePrevPage} 
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => page > 1 && setPage(page - 1)}
                 disabled={page === 1}
               >
                 Previous
               </Button>
-              <Button 
-                variant="secondary" 
-                size="sm" 
-                onClick={handleNextPage} 
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => page < totalPages && setPage(page + 1)}
                 disabled={page === totalPages}
               >
                 Next

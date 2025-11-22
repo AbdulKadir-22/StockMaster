@@ -1,9 +1,8 @@
-// FILE: stockmaster-frontend/src/App.jsx
-import React from 'react';
+// src/App.jsx
 import { Routes, Route, Navigate } from 'react-router-dom';
-
-// Context & Layout
 import { AuthProvider } from './context/AuthContext';
+
+// Layout for protected areas
 import AppShell from './components/layout/AppShell';
 
 // Public Pages
@@ -17,36 +16,39 @@ import ProductCreate from './pages/ProductCreate';
 import ReceiptCreate from './pages/ReceiptCreate';
 import DeliveryCreate from './pages/DeliveryCreate';
 import Ledger from './pages/Ledger';
+import Profile from './pages/Profile';
 
 function App() {
   return (
     <AuthProvider>
       <Routes>
-        {/* --- Public Routes --- */}
+
+        {/* PUBLIC ROUTES */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* --- Protected Routes (Wrapped in AppShell Layout) --- */}
+        {/* PROTECTED ROUTES */}
         <Route path="/" element={<AppShell />}>
-          {/* Redirect root "/" to "/dashboard" */}
+          {/* Redirect root → dashboard */}
           <Route index element={<Navigate to="/dashboard" replace />} />
-          
+
           <Route path="dashboard" element={<Dashboard />} />
-          
-          {/* Product Management */}
+
+          <Route path="profile" element={<Profile />} />
+
+          {/* Products */}
           <Route path="products" element={<ProductsList />} />
           <Route path="products/create" element={<ProductCreate />} />
-          
-          {/* Transactions (Receipts & Deliveries) */}
+
+          {/* Transactions */}
           <Route path="receipts/create" element={<ReceiptCreate />} />
           <Route path="deliveries/create" element={<DeliveryCreate />} />
-          
-          {/* Reporting */}
+
+          {/* Ledger */}
           <Route path="ledger" element={<Ledger />} />
         </Route>
-        
-        {/* --- Catch-all Redirect --- */}
-        {/* If user visits an unknown route, send them back to root */}
+
+        {/* FALLBACK ROUTE */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AuthProvider>

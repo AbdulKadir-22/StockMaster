@@ -1,0 +1,221 @@
+/* FILE: stockmaster-frontend/src/pages/Profile.css */
+
+.profile-container {
+  padding-bottom: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.profile-header-text {
+  margin-bottom: 2rem;
+}
+
+/* Common Card Styles */
+.profile-card {
+  background-color: var(--bg-white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  padding: 2rem;
+}
+
+.card-title {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--color-text);
+}
+
+/* --- Summary Card (Top) --- */
+.summary-card {
+  margin-bottom: 2rem;
+}
+
+.summary-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.avatar-section {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.avatar-placeholder {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #E0F2F1; /* Light teal */
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  border: 2px solid white;
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+.user-name {
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+  color: var(--color-text);
+}
+
+.user-email {
+  color: var(--color-text-light);
+  margin-bottom: 0.5rem;
+}
+
+.user-role {
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+  opacity: 0.8;
+}
+
+.separator {
+  margin: 0 0.5rem;
+  color: var(--border-color);
+}
+
+.summary-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1.5rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.logout-link {
+  background: none;
+  border: none;
+  color: var(--color-text-light);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.logout-link:hover {
+  color: var(--danger);
+}
+
+/* --- Grid Layout for Bottom Cards --- */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+/* Upload Box */
+.upload-section {
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.input-label {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.upload-box {
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  text-align: center;
+  background-color: var(--bg-light);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.upload-box:hover {
+  border-color: var(--color-primary);
+  background-color: rgba(11, 110, 97, 0.05);
+}
+
+.upload-icon {
+  font-size: 1.5rem;
+  color: var(--color-text-light);
+  margin-bottom: 0.5rem;
+}
+
+.upload-text {
+  font-size: 0.9rem;
+  color: var(--color-text);
+  margin-bottom: 0.25rem;
+}
+
+.highlight {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.upload-hint {
+  font-size: 0.8rem;
+  color: var(--color-text-light);
+}
+
+/* Password Strength */
+.password-strength {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+}
+
+.strength-bar {
+  flex-grow: 1;
+  height: 4px;
+  background-color: #eee;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.strength-fill {
+  height: 100%;
+  width: 30%; /* Mock width */
+  border-radius: 2px;
+}
+
+.strength-fill.weak { background-color: var(--danger); }
+.strength-label.weak { color: var(--danger); font-size: 0.8rem; font-weight: 600; }
+
+.form-actions-bottom {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.form-actions-bottom.right-align {
+  justify-content: flex-end;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .summary-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+  
+  .summary-actions {
+    width: 100%;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}

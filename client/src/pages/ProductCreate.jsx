@@ -1,4 +1,5 @@
-// FILE: stockmaster-frontend/src/pages/ProductCreate.jsx
+// FILE: src/pages/ProductCreate.jsx
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import productService from '../services/product.service';
@@ -18,7 +19,8 @@ const ProductCreate = () => {
     category: '',
     uom: '',
     reorderLevel: '',
-    description: ''
+    description: '',
+    // costPrice and salesPrice exist in backend and will default to 0 if omitted
   });
 
   // Mock Options (In real app, fetch from API or constants)
@@ -26,7 +28,7 @@ const ProductCreate = () => {
     { value: 'Raw Materials', label: 'Raw Materials' },
     { value: 'Components', label: 'Components' },
     { value: 'Finished Goods', label: 'Finished Goods' },
-    { value: 'Packaging', label: 'Packaging' }
+    { value: 'Packaging', label: 'Packaging' },
   ];
 
   const uomOptions = [
@@ -34,14 +36,14 @@ const ProductCreate = () => {
     { value: 'kg', label: 'Kilograms (kg)' },
     { value: 'l', label: 'Liters (l)' },
     { value: 'box', label: 'Box' },
-    { value: 'set', label: 'Set' }
+    { value: 'set', label: 'Set' },
   ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -51,11 +53,13 @@ const ProductCreate = () => {
     setError('');
 
     try {
-      // Convert reorderLevel to number
       const payload = {
         ...formData,
-        reorderLevel: Number(formData.reorderLevel),
-        quantity: 0 // Initial stock is 0
+        // Backend expects numeric reorderLevel; default to 0 if blank
+        reorderLevel: formData.reorderLevel
+          ? Number(formData.reorderLevel)
+          : 0,
+        // DO NOT send quantity: stock quantities live in StockItem now
       };
 
       await productService.create(payload);
@@ -95,9 +99,10 @@ const ProductCreate = () => {
               value={formData.sku}
               onChange={handleChange}
               required
-              // Add helper text logic here if Component supports it, otherwise generic layout
             />
-            <small className="helper-text">Stock Keeping Unit. Must be unique.</small>
+            <small className="helper-text">
+              Stock Keeping Unit. Must be unique.
+            </small>
           </div>
 
           <div className="form-row-2">
@@ -131,7 +136,9 @@ const ProductCreate = () => {
               required
               min="0"
             />
-            <small className="helper-text">Get notified when stock falls to this level.</small>
+            <small className="helper-text">
+              Get notified when stock falls to this level.
+            </small>
           </div>
 
           <div className="form-section">
@@ -147,18 +154,14 @@ const ProductCreate = () => {
           </div>
 
           <div className="form-actions">
-            <Button 
-              type="button" 
-              variant="secondary" 
+            <Button
+              type="button"
+              variant="secondary"
               onClick={() => navigate('/products')}
             >
               Cancel
             </Button>
-            <Button 
-              type="submit" 
-              variant="primary" 
-              isLoading={loading}
-            >
+            <Button type="submit" variant="primary" isLoading={loading}>
               Save Product
             </Button>
           </div>

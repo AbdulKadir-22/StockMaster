@@ -1,5 +1,4 @@
-// FILE: stockmaster-frontend/src/pages/Register.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Input from '../components/ui/Input';
@@ -9,24 +8,32 @@ import './Register.css';
 
 const Register = () => {
   const navigate = useNavigate();
-  const { register } = useAuth();
-  
+  const { register, isAuthenticated } = useAuth();
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'warehouse_staff'
+    role: 'staff'
   });
-  
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const roleOptions = [
-    { value: 'warehouse_staff', label: 'Warehouse Staff' },
+    { value: 'staff', label: 'Warehouse Staff' },
     { value: 'manager', label: 'Inventory Manager' },
     { value: 'admin', label: 'System Administrator' }
   ];
+
+  // If the user is already logged in, don't allow access to register.
+  // Redirect to dashboard to keep the flow consistent.
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -57,6 +64,7 @@ const Register = () => {
     try {
       // Exclude confirmPassword before sending to API
       const { confirmPassword, ...registrationData } = formData;
+      // This will set token + user in AuthContext and localStorage
       await register(registrationData);
       navigate('/dashboard');
     } catch (err) {
@@ -128,10 +136,10 @@ const Register = () => {
           />
 
           <div className="form-actions">
-            <Button 
-              type="submit" 
-              variant="primary" 
-              size="lg" 
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
               isLoading={loading}
               className="w-full"
             >
@@ -142,7 +150,10 @@ const Register = () => {
 
         <div className="register-footer">
           <p>
-            Already have an account? <Link to="/login" className="auth-link">Log In</Link>
+            Already have an account?{' '}
+            <Link to="/login" className="auth-link">
+              Log In
+            </Link>
           </p>
         </div>
       </div>
