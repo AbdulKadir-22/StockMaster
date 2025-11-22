@@ -207,11 +207,9 @@ Your detailed API documentation lives under the backend folder and the frontend 
 
 ## Contributors & contacts
 
-* Project owner / lead: *(add your name and contact email here)*
-* Backend lead: *(add name)* — see `backend/README.md` for API details
-* Frontend lead: *(add name)* — see `frontend/README.md` for UI details
-
-(Replace with real names and emails — useful for hackathon handoff.)
+* Project owner / lead: Abdulkadir
+* Backend lead: Abdulkadir — see `backend/README.md` for API details
+* Frontend lead: Rukshana & Abdulkadir — see `frontend/README.md` for UI details
 
 ---
 
